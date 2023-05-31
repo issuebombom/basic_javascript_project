@@ -116,8 +116,9 @@ const movieListing = async (pageNum = '1', keyword = '') => {
     poster_path = 'https://image.tmdb.org/t/p/w300' + poster_path;
     tempHTML = `<div class="post" onclick="alert('영화 id: ${String(id)}')">
                         <img src=${poster_path}>
+                        <p class="overlay-text">⭐️ ${vote_average}</p>
                         <div class="post-content">
-                          <h3>${original_title} (⭐️ ${vote_average})</h3>
+                          <h3>${original_title}</h3>
                           <div class="context-text">
                             <p>${overview}</p>
                           </div>
