@@ -1,9 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
   const currNum = getPageNum(); // 현재 페이지 정보를 가져오는 함수
+
+  // 이벤트 등록
   searchBox(currNum); // 키워드 검색 구현을 위한 함수
+  clickToMainPage(); // 타이틀 클릭 시 첫 페이지로 이동
+
+  // 랜더링 후 실행 함수
   movieListing(currNum); // 필터링된 영화 데이터를 프론트에 나열하는 함수
   pagination(currNum); // 현재 페이지에 따른 페이지네이션을 구현하는 함수
-  clickToMainPage(); // 타이틀 클릭 시 첫 페이지로 이동
 
   // focus input box
   (() => {
@@ -68,7 +72,7 @@ const getMovies = async (pageNum) => {
   return movies; // promise 객체에 리소스 object를 담아서 리턴
 };
 
-// 영화 정보를 프론트에 전달, 검색 키워드를 파라미터로 입력 (default = '')
+// 영화 정보를 프론트에 전달, 현재페이지와 검색 키워드를 파라미터로 입력
 const movieListing = async (pageNum = '1', keyword = '') => {
   movies = await getMovies(pageNum); // promise 객체의 데이터는 await로 꺼냄
   const keywordRegExp = new RegExp(keyword, 'i'); // 키워드를 정규표현식 객체로 생성, 'i'옵션으로 대소문자 구분 없도록 설정
@@ -126,7 +130,9 @@ const pagination = (currNum = 1) => {
     if (i === currNum) {
       liElement.style.color = 'gold';
     }
-  } // '다음 페이지 이동' 기호 생성 조건 (페이지 표시는 최대 100을 넘을 수 없습니다.)
+  }
+
+  // '다음 페이지 이동' 기호 생성 조건 (페이지 표시는 최대 100을 넘을 수 없습니다.)
   if (endNum < 100) {
     const liElement = `<li><a href="/?page=${endNum + 1}">≫</a></li>`;
     pageContainer.innerHTML += liElement;
