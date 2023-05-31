@@ -38,14 +38,36 @@ const getPageNum = () => {
 const searchBox = (pageNum) => {
   const searchButton = document.getElementById('search-button');
   const searchInput = document.getElementById('search-input');
+
+  // 페이지네이션 숨기기
+  const hidePageContainer = () => {
+    const pageContainer = document.querySelector('.page-container');
+    pageContainer.classList.add('hidden');
+  };
+
+  // 페이지네이션 보이기
+  const showPageContainer = () => {
+    const pageContainer = document.querySelector('.page-container');
+    pageContainer.classList.remove('hidden');
+  };
+
+  // 검색 실행 함수
+  const search = () => {
+    const searchKeyword = searchInput.value.trim();
+    // 키워드 검색 시 pagination 기능을 숨깁니다.
+    searchKeyword !== '' ? hidePageContainer() : showPageContainer()
+    movieListing(pageNum, searchKeyword); // 키워드 파라미터를 포함한 영화 리스팅
+    searchInput.value = searchKeyword; // trim 적용된 키워드를 검색창에 보여줌
+  };
+
   // 검색 버튼 클릭에 대한 이벤트 등록
   searchButton.addEventListener('click', () => {
-    movieListing(pageNum, searchInput.value); // 키워드 파라미터를 포함한 영화 리스팅
+    search();
   });
   // 검색창 Enter 입력 대한 이벤트 등록
   searchInput.addEventListener('keydown', (event) => {
     if (event.keyCode === 13) {
-      movieListing(pageNum, searchInput.value);
+      search();
     }
   });
 };
