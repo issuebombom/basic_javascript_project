@@ -1,6 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
   searchBox(); // 키워드 검색 구현을 위한 함수
   movieListing(); // 필터링된 영화 데이터를 프론트에 나열하는 함수
+
+  // focus input box
+  (() => {
+    const inputBox = document.getElementById('search-input');
+    inputBox.focus();
+  })();
 });
 
 // 검색창 구현
@@ -54,12 +60,12 @@ const movieListing = async (keyword = '') => {
   const postBox = document.getElementsByClassName('post-box')[0];
   postBox.innerHTML = ''; // empty post-box tag
   movies.forEach((movie) => {
-    let { id, original_title, overview, poster_path } = movie;
+    let { id, original_title, vote_average, overview, poster_path } = movie;
     poster_path = 'https://image.tmdb.org/t/p/w300' + poster_path;
-    tempHTML = `<div class="post" onclick="alert('movieId: ${String(id)}')">
+    tempHTML = `<div class="post" onclick="alert('영화 id: ${String(id)}')">
                         <img src=${poster_path} width="300px">
                         <div class="post-content">
-                          <h2>${original_title}</h2>
+                          <h2>${original_title} (⭐️ ${vote_average})</h2>
                           <div class="context-text">
                             <p>${overview}</p>
                           </div>
