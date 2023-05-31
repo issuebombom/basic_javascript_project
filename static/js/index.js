@@ -85,7 +85,7 @@ const getMovies = async (pageNum) => {
     },
   };
   const responce = await fetch(
-    `https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=${pageNum}`,
+    `https://api.themoviedb.org/3/movie/top_rated?language=ko&page=${pageNum}`,
     options
   );
   const data = await responce.json();
@@ -115,7 +115,7 @@ const movieListing = async (pageNum = '1', keyword = '') => {
     let { id, original_title, vote_average, overview, poster_path } = movie;
     poster_path = 'https://image.tmdb.org/t/p/w300' + poster_path;
     tempHTML = `<div class="post" onclick="alert('영화 id: ${String(id)}')">
-                        <img src=${poster_path} width="300px">
+                        <img src=${poster_path}>
                         <div class="post-content">
                           <h3>${original_title} (⭐️ ${vote_average})</h3>
                           <div class="context-text">

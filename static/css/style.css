@@ -69,6 +69,13 @@ body {
   border: 1px outset gold;
 }
 
+.post > img {
+  height: 450px;
+  width: auto;
+  display: block;
+  max-width: 100%;
+}
+
 .post-content {
   padding: 0px 15px 0px 15px;
 }
