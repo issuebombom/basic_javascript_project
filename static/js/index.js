@@ -102,7 +102,12 @@ const movieListing = async (pageNum = '1', keyword = '') => {
     // 영화 제목과 내용에 해당 키워드 포함 유무를 필터링
     (movie) => keywordRegExp.test(movie.original_title) || keywordRegExp.test(movie.overview)
   );
-
+  // 검색 결과가 없을 경우 
+  if (movies.length === 0) {
+    const postBox = document.querySelector('.post-box');  
+    postBox.innerHTML = '<h1 style="color: gold;">해당 키워드를 포함한 검색 결과가 없습니다.</h1>'
+    return
+  }
   // post-box 클래스에 동적 데이터 전달, UI 출력
   const postBox = document.querySelector('.post-box');
   postBox.innerHTML = ''; // empty post-box tag
