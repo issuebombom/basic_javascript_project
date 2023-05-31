@@ -1,6 +1,6 @@
 # 자바스크립트 개인 프로젝트 01
 
-![mainpage](./img/main.png)
+![mainpage](./img/main_img.png)
 
 ---
 
