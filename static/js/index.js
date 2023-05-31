@@ -51,7 +51,7 @@ const searchBox = (pageNum) => {
     pageContainer.classList.remove('hidden');
   };
 
-  // 검색 실행 함수
+  // 검색 실행 함수 (현재 페이지에 노출된 영화를 대상으로 키워드 검색)
   const search = () => {
     const searchKeyword = searchInput.value.trim();
     // 키워드 검색 시 pagination 기능을 숨깁니다.
@@ -104,7 +104,7 @@ const movieListing = async (pageNum = '1', keyword = '') => {
   );
 
   // post-box 클래스에 동적 데이터 전달, UI 출력
-  const postBox = document.getElementsByClassName('post-box')[0];
+  const postBox = document.querySelector('.post-box');
   postBox.innerHTML = ''; // empty post-box tag
   movies.forEach((movie) => {
     let { id, original_title, vote_average, overview, poster_path } = movie;
