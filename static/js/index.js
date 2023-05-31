@@ -2,7 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const currNum = getPageNum(); // 현재 페이지 정보를 가져오는 함수
   searchBox(currNum); // 키워드 검색 구현을 위한 함수
   movieListing(currNum); // 필터링된 영화 데이터를 프론트에 나열하는 함수
-  pagination(currNum);
+  pagination(currNum); // 현재 페이지에 따른 페이지네이션을 구현하는 함수
+  clickToMainPage(); // 타이틀 클릭 시 첫 페이지로 이동
 
   // focus input box
   (() => {
@@ -10,6 +11,14 @@ document.addEventListener('DOMContentLoaded', () => {
     inputBox.focus();
   })();
 });
+
+// 제목 클릭 시 메인페이지(page=1)로 이동
+const clickToMainPage = () => {
+  const pageTitle = document.querySelector('.header > h1');
+  pageTitle.addEventListener('click', () => {
+    window.location.href = '/?page=1';
+  });
+};
 
 // 페이지 번호 가져오기 (쿼리를 가져옵니다.)
 const getPageNum = () => {
