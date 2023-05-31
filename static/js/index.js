@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
-  searchBox(); // 키워드 검색 구현을 위한 함수
-  movieListing(); // 필터링된 영화 데이터를 프론트에 나열하는 함수
+  const currNum = getPageNum(); // 현재 페이지 정보를 가져오는 함수
+  searchBox(currNum); // 키워드 검색 구현을 위한 함수
+  movieListing(currNum); // 필터링된 영화 데이터를 프론트에 나열하는 함수
+  pagination(currNum);
 
   // focus input box
   (() => {
@@ -9,24 +11,34 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 });
 
+// 페이지 번호 가져오기 (쿼리를 가져옵니다.)
+const getPageNum = () => {
+  const params = new URLSearchParams(window.location.search);
+  let pageNum = params.get('page');
+  if (!pageNum) {
+    pageNum = '1';
+  }
+  return pageNum;
+};
+
 // 검색창 구현
-const searchBox = () => {
+const searchBox = (pageNum) => {
   const searchButton = document.getElementById('search-button');
   const searchInput = document.getElementById('search-input');
   // 검색 버튼 클릭에 대한 이벤트 등록
   searchButton.addEventListener('click', () => {
-    movieListing(searchInput.value); // 키워드 파라미터를 포함한 영화 리스팅
+    movieListing(pageNum, searchInput.value); // 키워드 파라미터를 포함한 영화 리스팅
   });
   // 검색창 Enter 입력 대한 이벤트 등록
   searchInput.addEventListener('keydown', (event) => {
     if (event.keyCode === 13) {
-      movieListing(searchInput.value);
+      movieListing(pageNum, searchInput.value);
     }
   });
 };
 
 // TMDB에서 영화 리소스를 가져오는 함수
-const getMovies = async () => {
+const getMovies = async (pageNum) => {
   // TMDB fetch 옵션
   const options = {
     method: 'GET',
@@ -38,7 +50,7 @@ const getMovies = async () => {
     },
   };
   const responce = await fetch(
-    'https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1',
+    `https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=${pageNum}`,
     options
   );
   const data = await responce.json();
@@ -48,8 +60,8 @@ const getMovies = async () => {
 };
 
 // 영화 정보를 프론트에 전달, 검색 키워드를 파라미터로 입력 (default = '')
-const movieListing = async (keyword = '') => {
-  movies = await getMovies(); // promise 객체의 데이터는 await로 꺼냄
+const movieListing = async (pageNum = '1', keyword = '') => {
+  movies = await getMovies(pageNum); // promise 객체의 데이터는 await로 꺼냄
   const keywordRegExp = new RegExp(keyword, 'i'); // 키워드를 정규표현식 객체로 생성, 'i'옵션으로 대소문자 구분 없도록 설정
   movies = movies.filter(
     // 영화 제목과 내용에 해당 키워드 포함 유무를 필터링
@@ -65,7 +77,7 @@ const movieListing = async (keyword = '') => {
     tempHTML = `<div class="post" onclick="alert('영화 id: ${String(id)}')">
                         <img src=${poster_path} width="300px">
                         <div class="post-content">
-                          <h2>${original_title} (⭐️ ${vote_average})</h2>
+                          <h3>${original_title} (⭐️ ${vote_average})</h3>
                           <div class="context-text">
                             <p>${overview}</p>
                           </div>
@@ -73,4 +85,41 @@ const movieListing = async (keyword = '') => {
                       </div>`;
     postBox.innerHTML += tempHTML; // append 'post' tag
   });
+};
+
+// pagination
+const pagination = (currNum = 1) => {
+  // 현재 페이지가 3이면 1, 2, 3, 4, 5를 구현합니다. 6이면 6, 7, 8, 9, 10을 구현합니다.
+  currNum = Number(currNum);
+  pageLength = 5;
+  const startNum = Math.floor((currNum - 1) / pageLength) * pageLength;
+  const endNum = startNum + 5;
+
+  const pageContainer = document.querySelector('.page-container');
+  pageContainer.innerHTML = ''; // empty page-container tag
+
+  // '이전 페이지 이동' 기호 생성 조건
+  if (endNum > 5) {
+    const liElement = `<li><a href="/?page=${startNum}">≪</a></li>`;
+    pageContainer.innerHTML += liElement;
+  }
+
+  // 현재 페이지를 기준으로 페이지 범위 구현
+  for (let i = startNum + 1; i <= endNum; i++) {
+    const liElement = document.createElement('li');
+    const aElement = document.createElement('a');
+    aElement.href = `/?page=${i}`;
+    aElement.textContent = i;
+    liElement.appendChild(aElement);
+    pageContainer.appendChild(liElement);
+
+    // 현재 페이지 번호는 금색으로 표시하여 현재 위치를 알려줍니다.
+    if (i === currNum) {
+      liElement.style.color = 'gold';
+    }
+  } // '다음 페이지 이동' 기호 생성 조건 (페이지 표시는 최대 100을 넘을 수 없습니다.)
+  if (endNum < 100) {
+    const liElement = `<li><a href="/?page=${endNum + 1}">≫</a></li>`;
+    pageContainer.innerHTML += liElement;
+  }
 };
