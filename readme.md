@@ -63,5 +63,15 @@ const result = keyword.replace(re, '');
 console.log(result); // '가나다'
 ```
 
-> 이후 내용 변경 시 추가 작성하도록 하겠습니다.
-#### 
+#### 랜더링 후 커서 위치를 검색창으로 설정 (focus)
+
+```javascript
+// focus input box
+(() => {
+  const inputBox = document.getElementById('search-input');
+  inputBox.focus();
+})();
+```
+
+즉시 실행 함수를 `DOMContentLoaded`에 적용하여 매 접속 시 자동으로 검색창에 커서가 설정되도록 구현
+
