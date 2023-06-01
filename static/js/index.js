@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // 제목 클릭 시 메인페이지(page=1)로 이동
-const clickToMainPage = (language) => {
+const clickToMainPage = () => {
   const pageTitle = document.querySelector('.header > h1');
   pageTitle.addEventListener('click', () => {
     window.location.href = `/?page=1`;
@@ -35,23 +35,41 @@ const getQuery = () => {
   return pageNum;
 };
 
+// 현재 검색창에 입력된 키워드를 리턴합니다.
+const getKeyword = () => {
+  const searchInput = document.getElementById('search-input');
+  return searchInput.value;
+};
+
+// 현재 선택된 언어 정보를 리턴합니다.
+const getLanguage = () => {
+  let currlanguage;
+  const radioLanguage = document.getElementsByName('language');
+  radioLanguage.forEach((radio) => {
+    if (radio.checked) {
+      currlanguage = radio.defaultValue;
+    }
+  });
+  return currlanguage;
+};
+
 // 언어 선택 구현
-const changeLanguage = (pageNum, keyword) => {
+const changeLanguage = (pageNum) => {
   // 언어 선택 라디오 버튼 구현
   const englishInput = document.getElementById('english');
   const koreanInput = document.getElementById('korean');
 
   // 라디오 버튼 이벤트 등록
   englishInput.addEventListener('change', () => {
-    movieListing(pageNum, keyword, 'en-US');
+    movieListing(pageNum, getKeyword(), 'en-US');
   });
   koreanInput.addEventListener('change', () => {
-    movieListing(pageNum, keyword, 'ko');
+    movieListing(pageNum, getKeyword(), 'ko');
   });
 };
 
 // 검색창 구현
-const searchBox = (pageNum, language) => {
+const searchBox = (pageNum) => {
   const searchButton = document.getElementById('search-button');
   const searchInput = document.getElementById('search-input');
 
@@ -72,7 +90,9 @@ const searchBox = (pageNum, language) => {
     const searchKeyword = searchInput.value.trim();
     // 키워드 검색 시 pagination 기능을 숨깁니다.
     searchKeyword !== '' ? hidePageContainer() : showPageContainer();
-    movieListing(pageNum, searchKeyword, language); // 키워드 파라미터를 포함한 영화 리스팅
+
+    // 키워드 파라미터를 포함한 영화 리스팅
+    movieListing(pageNum, searchKeyword, getLanguage());
     searchInput.value = searchKeyword; // trim 적용된 키워드를 검색창에 보여줌
   };
   // 검색 버튼 클릭에 대한 이벤트 등록
