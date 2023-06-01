@@ -1,9 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const currNum = getPageNum(); // 현재 페이지 정보를 가져오는 함수
+  const currNum = getQuery(); // 현재 페이지 정보를 가져오는 함수
 
   // 이벤트 등록
   searchBox(currNum); // 키워드 검색 구현을 위한 함수
   clickToMainPage(); // 타이틀 클릭 시 첫 페이지로 이동
+  changeLanguage(currNum);
 
   // 랜더링 후 실행 함수
   movieListing(currNum); // 필터링된 영화 데이터를 프론트에 나열하는 함수
@@ -17,15 +18,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // 제목 클릭 시 메인페이지(page=1)로 이동
-const clickToMainPage = () => {
+const clickToMainPage = (language) => {
   const pageTitle = document.querySelector('.header > h1');
   pageTitle.addEventListener('click', () => {
-    window.location.href = '/?page=1';
+    window.location.href = `/?page=1`;
   });
 };
 
-// 페이지 번호 가져오기 (쿼리를 가져옵니다.)
-const getPageNum = () => {
+// url의 쿼리를 가져옵니다.
+const getQuery = () => {
   const params = new URLSearchParams(window.location.search);
   let pageNum = params.get('page');
   if (!pageNum) {
@@ -34,8 +35,23 @@ const getPageNum = () => {
   return pageNum;
 };
 
+// 언어 선택 구현
+const changeLanguage = (pageNum, keyword) => {
+  // 언어 선택 라디오 버튼 구현
+  const englishInput = document.getElementById('english');
+  const koreanInput = document.getElementById('korean');
+
+  // 라디오 버튼 이벤트 등록
+  englishInput.addEventListener('change', () => {
+    movieListing(pageNum, keyword, 'en-US');
+  });
+  koreanInput.addEventListener('change', () => {
+    movieListing(pageNum, keyword, 'ko');
+  });
+};
+
 // 검색창 구현
-const searchBox = (pageNum) => {
+const searchBox = (pageNum, language) => {
   const searchButton = document.getElementById('search-button');
   const searchInput = document.getElementById('search-input');
 
@@ -55,11 +71,10 @@ const searchBox = (pageNum) => {
   const search = () => {
     const searchKeyword = searchInput.value.trim();
     // 키워드 검색 시 pagination 기능을 숨깁니다.
-    searchKeyword !== '' ? hidePageContainer() : showPageContainer()
-    movieListing(pageNum, searchKeyword); // 키워드 파라미터를 포함한 영화 리스팅
+    searchKeyword !== '' ? hidePageContainer() : showPageContainer();
+    movieListing(pageNum, searchKeyword, language); // 키워드 파라미터를 포함한 영화 리스팅
     searchInput.value = searchKeyword; // trim 적용된 키워드를 검색창에 보여줌
   };
-
   // 검색 버튼 클릭에 대한 이벤트 등록
   searchButton.addEventListener('click', () => {
     search();
@@ -73,7 +88,7 @@ const searchBox = (pageNum) => {
 };
 
 // TMDB에서 영화 리소스를 가져오는 함수
-const getMovies = async (pageNum) => {
+const getMovies = async (pageNum, language) => {
   // TMDB fetch 옵션
   const options = {
     method: 'GET',
@@ -85,7 +100,7 @@ const getMovies = async (pageNum) => {
     },
   };
   const responce = await fetch(
-    `https://api.themoviedb.org/3/movie/top_rated?language=ko&page=${pageNum}`,
+    `https://api.themoviedb.org/3/movie/top_rated?language=${language}&page=${pageNum}`,
     options
   );
   const data = await responce.json();
@@ -95,18 +110,18 @@ const getMovies = async (pageNum) => {
 };
 
 // 영화 정보를 프론트에 전달, 현재페이지와 검색 키워드를 파라미터로 입력
-const movieListing = async (pageNum = '1', keyword = '') => {
-  movies = await getMovies(pageNum); // promise 객체의 데이터는 await로 꺼냄
+const movieListing = async (pageNum = '1', keyword = '', language = 'en-US') => {
+  movies = await getMovies(pageNum, language); // promise 객체의 데이터는 await로 꺼냄
   const keywordRegExp = new RegExp(keyword, 'i'); // 키워드를 정규표현식 객체로 생성, 'i'옵션으로 대소문자 구분 없도록 설정
   movies = movies.filter(
     // 영화 제목과 내용에 해당 키워드 포함 유무를 필터링
     (movie) => keywordRegExp.test(movie.original_title) || keywordRegExp.test(movie.overview)
   );
-  // 검색 결과가 없을 경우 
+  // 검색 결과가 없을 경우
   if (movies.length === 0) {
-    const postBox = document.querySelector('.post-box');  
-    postBox.innerHTML = '<h1 style="color: gold;">해당 키워드를 포함한 검색 결과가 없습니다.</h1>'
-    return
+    const postBox = document.querySelector('.post-box');
+    postBox.innerHTML = '<h1 style="color: gold;">해당 키워드를 포함한 검색 결과가 없습니다.</h1>';
+    return;
   }
   // post-box 클래스에 동적 데이터 전달, UI 출력
   const postBox = document.querySelector('.post-box');
@@ -126,6 +141,8 @@ const movieListing = async (pageNum = '1', keyword = '') => {
                       </div>`;
     postBox.innerHTML += tempHTML; // append 'post' tag
   });
+
+  return language;
 };
 
 // pagination
