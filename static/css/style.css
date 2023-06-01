@@ -40,6 +40,10 @@ body {
   min-width: 345px;
 }
 
+form label {
+  color:azure
+}
+
 .post-box {
   background-color: rgb(5, 2, 21);
   display: flex;
