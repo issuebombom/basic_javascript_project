@@ -118,3 +118,35 @@ posts.forEach((post) => {
 이처럼 동일한 여러 태그를 대상으로 이벤트 리스너를 적용할 수 있습니다.
 
 저의 경우 해당 기능으로 각 태그에 `'hidden'` 이라는 class를 추가하고, CSS에서 hidden 클래스에 `display: none;`를 적용하여 동적으로 숨기는 기능을 추가하는데 활용했습니다.
+
+#### 선택한 라디오태그 결과 가져오기
+처음에는 html 여러 라디오 태그 중 선택된 태그에는 checked라는 항목이 붙는다고 생각했습니다. 그래서 선택된 라디오 태그의 value를 가져오는 기능을 구현하려 했습니다. 하지만 크롬 개발자 도구를 통해 html을 살펴보면 실제로 어떤 라디오 태그를 선택하더라도 html 태그 상에서는 변화가 없었습니다. 
+
+여기서 console.dir() 기능을 통해 해당 태그가 지니고 있는 객체를 확인할 수 있다는 점을 알게 되었고, 이 점을 통해 각 라디오 태그가 checked 상태인지 아닌지를 확인할 수 있었습니다.
+```javascript
+const getLanguage = () => {
+  let currlanguage;
+  const radioLanguage = document.getElementsByName('language');
+  radioLanguage.forEach((radio) => {
+    console.dir(radio) // radio 태그의 객체를 확인합니다.
+  });
+}
+```
+
+그래서 아래와 같이 라디오 태그의 객체에 직접 접근하여 checked 상태에 따른, 즉 선택된 라디오 태그에 설정된 기본값을 가져오는 방식을 통해 현재 프론트 상에서 선택된 태그의 값을 가져올 수 있었습니다.
+
+
+```javascript
+const getLanguage = () => {
+  let currlanguage;
+  const radioLanguage = document.getElementsByName('language');
+  radioLanguage.forEach((radio) => {
+    if (radio.checked) {
+      currlanguage = radio.defaultValue;
+    }
+  });
+  return currlanguage;
+}
+```
+
+console.dir을 통해 기본적으로 제공되는 자바스크립트 메소드 뿐 아니라 내가 지닌 태그의 객체에 직접 접근할 수 있다는 것을 배울 수 있었습니다.
