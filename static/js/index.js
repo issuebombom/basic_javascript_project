@@ -110,23 +110,16 @@ const searchBox = (pageNum) => {
 // TMDB에서 영화 리소스를 가져오는 함수
 const getMovies = async (pageNum, language) => {
   // TMDB fetch 옵션
-  const options = {
-    method: 'GET',
+  const auth = {
     headers: {
-      accept: 'application/json',
-      // 인증키
       Authorization:
         'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4OTA1ZTlkMmE3Y2ZkZmViNzM1MDEzYjZlNmQ3NzhiMyIsInN1YiI6IjY0NzU3NGU5YmJjYWUwMDExOGJmNmQ3OSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.NX73Ve8n9Sej2np-7mP-addEhM0R1Uo3k9hsfgl8PX8',
     },
   };
   const responce = await fetch(
-    `https://api.themoviedb.org/3/movie/top_rated?language=${language}&page=${pageNum}`,
-    options
-  );
-  const data = await responce.json();
-  const movies = data['results'];
-
-  return movies; // promise 객체에 리소스 object를 담아서 리턴
+    `https://api.themoviedb.org/3/movie/top_rated?language=${language}&page=${pageNum}`, auth);
+  const { results } = await responce.json();
+  return results; // promise 객체에 리소스 object를 담아서 리턴
 };
 
 // 영화 정보를 프론트에 전달, 현재페이지와 검색 키워드를 파라미터로 입력
