@@ -193,3 +193,61 @@ postBox.innerHTML = movies.reduce((accumulation, eachData) => {
 ```
 forEach를 사용할 경우 postBox.innerHTML의 초기화(빈값으로 만들기)과정과 더하는 과정이 분리되어 있지만 reduce를 적용함으로서 이 기능을 하나로 합칠 수 있다. 또한 reduce에서 accumulation 변수에 해당하는 누적값이 초기에는 빈값('')을 받고 이후로는 각 iteration의 return값을 누적하는 원리를 이용하여 return문에 바로 누적 연산을 적용하였다.  
 추가적으로 img url의 불필요한 덧셈 과정을 축소했다.
+
+#### form 태그로 검색창 기능 축소
+기존 방식에서는 검색창 구현을 위해 input태그와 button태그를 div태그로 감쌌다.  
+그래서 input태그에서 enter입력을 통한 검색 명령과 button클릭 시 검색 명령을 각각 이벤트 리스너로 등록해줘야 했다.
+
+```html
+<!-- Before -->
+<div class="search-box">
+  <input id="search-input" type="text" placeholder="키워드를 입력하세요" style="width: 200px; height: 30px;">
+  <button id="search-button" type="submit" style="height: 36px;">검색</button>
+</div>
+```
+```javascript
+// 검색 버튼 클릭에 대한 이벤트 등록
+  searchButton.addEventListener('click', () => {
+    search();
+  });
+  // 검색창 Enter 입력 대한 이벤트 등록
+  searchInput.addEventListener('keydown', (event) => {
+    if (event.keyCode === 13) {
+      search();
+    }
+  });
+```
+
+하지만 form 태그의 자식태그로 검색 구현을 한 뒤 submit에 대한 이벤트리스너를 적용한다면 클릭과 엔터에 대한 이벤트를 따로 등록할 필요가 없었다.
+```html
+<!-- After -->
+<form class="search-box">
+  <input id="search-input" type="text" placeholder="키워드를 입력하세요" style="width: 200px; height: 30px;">
+  <button id="search-button" type="submit" style="height: 36px;">검색</button>
+</form>
+```
+```javascript
+searchBox.addEventListener('submit', (event) => {
+  event.preventDefault()
+  search();
+})
+```
+saerchBox는 form 태그로, input과 button의 부모 태그이다.  
+여기서 적용된 개념은 `이벤트 버블링`과 `form`태그 내 input태그는 엔터키에 대한 이벤트가 기본적으로 내장되어 있다는 점이다.  
+
+이벤트버블링은 자식 태그의 이벤트를 부모 태그에서 처리할 수 있도록 위임되는 현상을 말한다. 그래서 button 태그의 `submit` 이벤트가 부모 태그인 form태그에서도 핸들링이 가능한 것이다. 
+
+> 💡 `Tip`  
+이벤트 버블링과 아래 메서드를 활용한다면 여러 자식 태그들에게서 발생하는 동일한 이벤트에 대해서 각각 다른 기능이 발현되도록 할 수 있다.  
+`event.target` : 이벤트가 발생한 요소  
+`event.currentTarget`: 이벤트 핸들러가 등록되어 있는 요소
+
+또한 form태그에 submit 이벤트 핸들러가 등록된 경우 자식 태그의 input 태그는 엔터키 입력 시 submit 이벤트가 발생하도록 기본적으로 설정되어 있다.  
+
+그리고 form 태그 내부의 input과 button은 기본 타입이 submit이다. 그래서 사실 button 태그의 type을 명시하지 않아도 작동에 문제가 없다.  
+
+>💡 `Tip`  
+form태그 submit 이벤트는 기본적으로 내장된 이벤트가 있다.  
+만약 자식태그의 input태그에 `name="memberId"`가 명시되어 있는 상태에서 입력창에 숫자 1을 적고 엔터키를 누른다면 url에 `?memberId=1`이라는 쿼리문을 추가하여 페이지를 새로고침한다.  
+위 기본 이벤트를 활용할 수 있겠지만 현재 구현하고자 하는 기능에서는 불필요한 기능이므로 `event.preventDefault()` 메서드를 통해 기본 이벤트 발생을 방지하고 있다.
+

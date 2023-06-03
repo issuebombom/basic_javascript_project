@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const currNum = getQuery(); // 현재 페이지 정보를 가져오는 함수
 
   // 이벤트 등록
-  searchBox(currNum); // 키워드 검색 구현을 위한 함수
+  handlerSearch(currNum); // 키워드 검색 구현을 위한 함수
   clickToMainPage(); // 타이틀 클릭 시 첫 페이지로 이동
   changeLanguage(currNum);
 
@@ -68,10 +68,10 @@ const changeLanguage = (pageNum) => {
   });
 };
 
-// 검색창 구현
-const searchBox = (pageNum) => {
-  const searchButton = document.getElementById('search-button');
-  const searchInput = document.getElementById('search-input');
+// 검색창 이벤트 등록
+const handlerSearch = (pageNum) => {
+  const searchBox = document.querySelector('.search-box');
+  const searchInput = document.querySelector('#search-input')
 
   // 페이지네이션 숨기기
   const hidePageContainer = () => {
@@ -95,15 +95,10 @@ const searchBox = (pageNum) => {
     movieListing(pageNum, searchKeyword, getLanguage());
     searchInput.value = searchKeyword; // trim 적용된 키워드를 검색창에 보여줌
   };
-  // 검색 버튼 클릭에 대한 이벤트 등록
-  searchButton.addEventListener('click', () => {
+  // 키워드 검색에 대한 이벤트 등록
+  searchBox.addEventListener('submit', (event) => {
+    event.preventDefault()
     search();
-  });
-  // 검색창 Enter 입력 대한 이벤트 등록
-  searchInput.addEventListener('keydown', (event) => {
-    if (event.keyCode === 13) {
-      search();
-    }
   });
 };
 
