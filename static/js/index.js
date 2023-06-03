@@ -47,25 +47,19 @@ const getLanguage = () => {
   return currlanguage;
 };
 
-// 언어 선택 구현
+// 선택된 언어로 영화정보 리스팅 구현
 const changeLanguage = (pageNum) => {
   // 언어 선택 라디오 버튼 구현
-  const englishInput = document.getElementById('english');
-  const koreanInput = document.getElementById('korean');
-
-  // 라디오 버튼 이벤트 등록
-  englishInput.addEventListener('change', () => {
-    movieListing(pageNum, getKeyword(), 'en-US');
-  });
-  koreanInput.addEventListener('change', () => {
-    movieListing(pageNum, getKeyword(), 'ko');
+  const languageSelector = document.querySelector('.language-selector');
+  languageSelector.addEventListener('change', (event) => {
+    movieListing(pageNum, getKeyword(), event.target.value);
   });
 };
 
 // 검색창 이벤트 등록
 const handlerSearch = (pageNum) => {
   const searchBox = document.querySelector('.search-box');
-  const searchInput = document.querySelector('#search-input')
+  const searchInput = document.querySelector('#search-input');
   searchInput.focus();
 
   // 페이지네이션 숨기기
@@ -92,7 +86,7 @@ const handlerSearch = (pageNum) => {
   };
   // 키워드 검색에 대한 이벤트 등록
   searchBox.addEventListener('submit', (event) => {
-    event.preventDefault()
+    event.preventDefault();
     search();
   });
 };
