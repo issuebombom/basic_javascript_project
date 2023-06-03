@@ -145,22 +145,21 @@ const movieListing = async (pageNum = '1', keyword = '', language = 'en-US') => 
   }
   // post-box 클래스에 동적 데이터 전달, UI 출력
   const postBox = document.querySelector('.post-box');
-  postBox.innerHTML = ''; // empty post-box tag
-  movies.forEach((movie) => {
-    let { id, original_title, vote_average, overview, poster_path } = movie;
-    poster_path = 'https://image.tmdb.org/t/p/w300' + poster_path;
-    tempHTML = `<div class="post" onclick="alert('영화 id: ${String(id)}')">
-                        <img src=${poster_path}>
-                        <p class="overlay-text">⭐️ ${vote_average}</p>
-                        <div class="post-content">
-                          <h3>${original_title}</h3>
-                          <div class="context-text">
-                            <p>${overview}</p>
-                          </div>
-                        </div>
-                      </div>`;
-    postBox.innerHTML += tempHTML; // append 'post' tag
-  });
+  postBox.innerHTML = movies.reduce((accumulation, eachData) => {
+    let { id, original_title, vote_average, overview, poster_path } = eachData;
+    return accumulation + `
+            <div class="post" onclick="alert('영화 id: ${String(id)}')">
+              <img src=${'https://image.tmdb.org/t/p/w300' + poster_path}>
+              <p class="overlay-text">⭐️ ${vote_average}</p>
+              <div class="post-content">
+                <h3>${original_title}</h3>
+                <div class="context-text">
+                  <p>${overview}</p>
+                </div>
+              </div>
+            </div>
+    `;
+  }, '');
 
   return language;
 };
