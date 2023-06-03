@@ -50,18 +50,6 @@ const handlerSearch = (pageNum) => {
   const searchInput = document.querySelector('#search-input');
   searchInput.focus();
 
-  // 페이지네이션 숨기기
-  const hidePageContainer = () => {
-    const pageContainer = document.querySelector('.page-container');
-    pageContainer.classList.add('hidden');
-  };
-
-  // 페이지네이션 보이기
-  const showPageContainer = () => {
-    const pageContainer = document.querySelector('.page-container');
-    pageContainer.classList.remove('hidden');
-  };
-
   // 현재 선택된 언어 정보를 리턴합니다.
   const getCurrentLanguage = () => {
     const radioLanguage = document.getElementsByName('language');
@@ -72,7 +60,10 @@ const handlerSearch = (pageNum) => {
   const search = () => {
     const searchKeyword = searchInput.value.trim();
     // 키워드 검색 시 pagination 기능을 숨깁니다.
-    searchKeyword !== '' ? hidePageContainer() : showPageContainer();
+    const pageContainer = document.querySelector('.page-container');
+    searchKeyword !== ''
+      ? pageContainer.classList.add('hidden')
+      : pageContainer.classList.remove('hidden')
 
     // 키워드 파라미터를 포함한 영화 리스팅
     movieListing(pageNum, searchKeyword, getCurrentLanguage());
