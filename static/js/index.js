@@ -9,12 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // 랜더링 후 실행 함수
   movieListing(currNum); // 필터링된 영화 데이터를 프론트에 나열하는 함수
   pagination(currNum); // 현재 페이지에 따른 페이지네이션을 구현하는 함수
-
-  // focus input box
-  (() => {
-    const inputBox = document.getElementById('search-input');
-    inputBox.focus();
-  })();
 });
 
 // 제목 클릭 시 메인페이지(page=1)로 이동
@@ -72,6 +66,7 @@ const changeLanguage = (pageNum) => {
 const handlerSearch = (pageNum) => {
   const searchBox = document.querySelector('.search-box');
   const searchInput = document.querySelector('#search-input')
+  searchInput.focus();
 
   // 페이지네이션 숨기기
   const hidePageContainer = () => {
