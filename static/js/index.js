@@ -35,18 +35,6 @@ const getKeyword = () => {
   return searchInput.value;
 };
 
-// 현재 선택된 언어 정보를 리턴합니다.
-const getLanguage = () => {
-  let currlanguage;
-  const radioLanguage = document.getElementsByName('language');
-  radioLanguage.forEach((radio) => {
-    if (radio.checked) {
-      currlanguage = radio.defaultValue;
-    }
-  });
-  return currlanguage;
-};
-
 // 선택된 언어로 영화정보 리스팅 구현
 const changeLanguage = (pageNum) => {
   // 언어 선택 라디오 버튼 구현
@@ -74,6 +62,12 @@ const handlerSearch = (pageNum) => {
     pageContainer.classList.remove('hidden');
   };
 
+  // 현재 선택된 언어 정보를 리턴합니다.
+  const getCurrentLanguage = () => {
+    const radioLanguage = document.getElementsByName('language');
+    return Array.from(radioLanguage).find((radio) => radio.checked).defaultValue
+  };
+
   // 검색 실행 함수 (현재 페이지에 노출된 영화를 대상으로 키워드 검색)
   const search = () => {
     const searchKeyword = searchInput.value.trim();
@@ -81,7 +75,7 @@ const handlerSearch = (pageNum) => {
     searchKeyword !== '' ? hidePageContainer() : showPageContainer();
 
     // 키워드 파라미터를 포함한 영화 리스팅
-    movieListing(pageNum, searchKeyword, getLanguage());
+    movieListing(pageNum, searchKeyword, getCurrentLanguage());
     searchInput.value = searchKeyword; // trim 적용된 키워드를 검색창에 보여줌
   };
   // 키워드 검색에 대한 이벤트 등록
