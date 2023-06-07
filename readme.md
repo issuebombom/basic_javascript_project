@@ -194,7 +194,7 @@ postBox.innerHTML = movies.reduce((accumulation, eachData) => {
 forEach를 사용할 경우 postBox.innerHTML의 초기화(빈값으로 만들기)과정과 더하는 과정이 분리되어 있지만 reduce를 적용함으로서 이 기능을 하나로 합칠 수 있다. 또한 reduce에서 accumulation 변수에 해당하는 누적값이 초기에는 빈값('')을 받고 이후로는 각 iteration의 return값을 누적하는 원리를 이용하여 return문에 바로 누적 연산을 적용하였다.  
 추가적으로 img url의 불필요한 덧셈 과정을 축소했다.
 
-#### form 태그로 검색창 기능 축소
+#### 5. form 태그로 검색창 기능 축소
 기존 방식에서는 검색창 구현을 위해 input태그와 button태그를 div태그로 감쌌다.  
 그래서 input태그에서 enter입력을 통한 검색 명령과 button클릭 시 검색 명령을 각각 이벤트 리스너로 등록해줘야 했다.
 
